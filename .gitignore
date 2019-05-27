@@ -1,2 +1,10 @@
-*.class
+.idea/*
+*.iws
+out/
 *.log
+dist/*
+target/
+.cache
+.lib/
+gen
+project/project/

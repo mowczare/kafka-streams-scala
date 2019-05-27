@@ -8,6 +8,7 @@ final class ExampleStream(kafkaSettings: KafkaSettings) {
 
   private val streams: KafkaStreams = new KafkaStreams(
     new StreamsBuilder()
+      //TODO add your streaming topology logic here:
       .build(),
     kafkaSettings.streamProperties(streamName)
   )

@@ -11,6 +11,7 @@ object Dependencies {
   val mockedStreamsVersion = "3.3.0"
   val avsystemCommonsVersion = "1.34.19"
   val scalaTestVersion = "3.0.7"
+  val streamLibVersion = "3.0.0"
 
   private val kafkaDeps = Seq(
     "org.apache.kafka" % "kafka-clients" % kafkaVersion,
@@ -24,6 +25,7 @@ object Dependencies {
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
     "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
+    "com.addthis" % "stream-lib" % streamLibVersion
   )
 
   val all: Seq[ModuleID] = kafkaDeps ++ avSystemDeps ++ otherDeps

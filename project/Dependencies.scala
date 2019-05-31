@@ -24,8 +24,7 @@ object Dependencies {
   private val otherDeps = Seq(
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-    "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion,
-    "com.addthis" % "stream-lib" % streamLibVersion
+    "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingVersion
   )
 
   val all: Seq[ModuleID] = kafkaDeps ++ avSystemDeps ++ otherDeps

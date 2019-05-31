@@ -3,6 +3,7 @@ package com.mowczare.kafka.streams.example.environment
 import java.util.Properties
 
 import com.avsystem.commons._
+import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.StreamsConfig
 
 final case class KafkaSettings(bootstrapServers: String,
@@ -19,6 +20,8 @@ final case class KafkaSettings(bootstrapServers: String,
     props.put(StreamsConfig.STATE_DIR_CONFIG, localStateDir)
     props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, streamThreads.toString)
     props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, replicationFactor.toString)
+    props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String.getClass)
+    props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String.getClass)
   }
 }
 

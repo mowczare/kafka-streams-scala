@@ -9,7 +9,6 @@ import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil.codecToSerde
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
-import scala.util.Random
 
 final class InputEventProducer(kafkaSettings: KafkaSettings) {
 
@@ -21,10 +20,10 @@ final class InputEventProducer(kafkaSettings: KafkaSettings) {
 
   private val producer = new KafkaProducer[String, Array[Byte]](props)
 
-  private val entityIds: ISeq[String] = (1 to 1000).map(i => s"Entity-$i")
+  private val entityIds: ISeq[String] = (1 to 4).map(i => s"Entity-$i")
 
   private def inputEvent(): InputEvent = {
-    InputEvent((Random.nextGaussian() * 2000).toLong - 1000L)
+    InputEvent(System.currentTimeMillis())
   }
 
   private def inputRecord(id: String): ProducerRecord[String, Array[Byte]] = {

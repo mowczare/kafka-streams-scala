@@ -15,7 +15,7 @@ object Launcher extends App {
   val kafkaSettings = KafkaSettings(
     bootstrapServers = "localhost:9092",
     localStateDir = "/tmp/kafka-streams",
-    streamThreads = 4,
+    streamThreads = 2,
     partitions = 4,
     replicationFactor = 1,
     inputTopic = "kafka-streams-input",

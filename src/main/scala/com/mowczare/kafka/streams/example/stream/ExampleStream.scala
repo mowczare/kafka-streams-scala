@@ -10,6 +10,8 @@ import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
 import com.mowczare.kafka.streams.StreamOps._
 import com.mowczare.kafka.streams.hll.hashing.GenCodecHashing._
+import org.apache.kafka.streams.scala.ImplicitConversions._
+
 final class ExampleStream(kafkaSettings: KafkaSettings) {
 
   private val streams: KafkaStreams = new KafkaStreams(
@@ -48,9 +50,9 @@ object ExampleStream {
 
     builder
       .stream[String, InputEvent](inputTopic)
-      .groupBy { case (key, event) => event.value }
+      .groupBy { case (key, event) => event.value % 2 }
       .hllXd()
       .toStream
-      .to(outputTopic)
+      .to(outputTopic)(implicitly)
   }
 }

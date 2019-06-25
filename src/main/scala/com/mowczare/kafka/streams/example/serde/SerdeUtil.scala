@@ -5,9 +5,13 @@ import java.nio.charset.StandardCharsets
 import com.avsystem.commons._
 import com.avsystem.commons.serialization.GenCodec
 import com.avsystem.commons.serialization.json.{JsonDateFormat, JsonOptions, JsonStringInput, JsonStringOutput}
+import com.yahoo.sketches.hll.HllSketch
 import org.apache.kafka.common.serialization.{Deserializer, Serde, Serdes, Serializer}
 
 object SerdeUtil {
+
+  implicit val hllGenCodec: GenCodec[HllSketch] =
+    GenCodec.transformed[HllSketch, Array[Byte]](_.toCompactByteArray, HllSketch.heapify)
 
 
   /** Creates a Kafka Serde for provided type with the `GenCodec` defined. */
@@ -34,4 +38,6 @@ object SerdeUtil {
     }
     Serdes.serdeFrom(serializer, deserializer)
   }
+
+
 }

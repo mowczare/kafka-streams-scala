@@ -8,7 +8,8 @@ import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopology
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
-
+import com.mowczare.kafka.streams.StreamOps._
+import com.mowczare.kafka.streams.hll.hashing.GenCodecHashing._
 final class ExampleStream(kafkaSettings: KafkaSettings) {
 
   private val streams: KafkaStreams = new KafkaStreams(
@@ -34,6 +35,22 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .filter((_, _) => false)
+      .to(outputTopic)
+
+
+  }
+
+  def streamTopologyHll(inputTopic: String, outputTopic: String)(builder: StreamsBuilder): Unit = {
+
+    import org.apache.kafka.streams.scala.Serdes._
+    implicit val inputEventSerde: Serde[InputEvent] = SerdeUtil.codecToSerde[InputEvent]
+    import org.apache.kafka.streams.scala.ImplicitConversions._
+
+    builder
+      .stream[String, InputEvent](inputTopic)
+      .groupBy { case (key, event) => event.value }
+      .hllXd()
+      .toStream
       .to(outputTopic)
   }
 }

@@ -1,21 +1,20 @@
 package com.mowczare.kafka.streams.example.stream
 
 import com.avsystem.commons._
+import com.mowczare.kafka.streams.StreamOps._
 import com.mowczare.kafka.streams.example.environment.KafkaSettings
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopology
+import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyHll
+import com.mowczare.kafka.streams.hll.hashing.GenCodecHashing._
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
-import com.mowczare.kafka.streams.StreamOps._
-import com.mowczare.kafka.streams.hll.hashing.GenCodecHashing._
-import org.apache.kafka.streams.scala.ImplicitConversions._
 
 final class ExampleStream(kafkaSettings: KafkaSettings) {
 
   private val streams: KafkaStreams = new KafkaStreams(
-    new StreamsBuilder().setup(streamTopology(kafkaSettings.inputTopic, kafkaSettings.outputTopic)).build(),
+    new StreamsBuilder().setup(streamTopologyHll(kafkaSettings.inputTopic, kafkaSettings.outputTopic)).build(),
     kafkaSettings.streamProperties(streamName)
   )
 
@@ -53,6 +52,7 @@ object ExampleStream {
       .groupBy { case (key, event) => event.value % 2 }
       .hllXd()
       .toStream
+      .peek {case (k, v) => println(k, v)}
       .to(outputTopic)(implicitly)
   }
 }

@@ -7,7 +7,7 @@ import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
 import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyHll
 import com.mowczare.kafka.streams.hll.hashing.GenCodecHashing._
-import com.mowczare.kafka.streams.hll.model.{HllWrap, ThetaWrap}
+import com.mowczare.kafka.streams.hll.model.{HllWrap, ItemSketchWrap, ThetaWrap}
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
@@ -52,9 +52,9 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
-      .thetaXd()
+      .freaquencyXd()
       .toStream
       .peek {case (k, v) => println(k, v)}
-      .to(outputTopic)(implicitly[Produced[Long, ThetaWrap[InputEvent]]])
+      .to(outputTopic)(implicitly[Produced[Long, ItemSketchWrap[InputEvent]]])
   }
 }

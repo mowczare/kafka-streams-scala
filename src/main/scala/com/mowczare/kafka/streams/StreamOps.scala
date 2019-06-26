@@ -2,7 +2,7 @@ package com.mowczare.kafka.streams
 
 import com.mowczare.kafka.streams.StreamOps.KGroupedStreamExt
 import com.mowczare.kafka.streams.hll.hashing.AsByteArray
-import com.mowczare.kafka.streams.hll.model.HllWrap
+import com.mowczare.kafka.streams.hll.model.{HllWrap, ThetaWrap}
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.scala.kstream.{KGroupedStream, KTable}
 
@@ -22,6 +22,11 @@ object StreamOps extends StreamOps {
     def hllXd(): KTable[KR, HllWrap[V]] = {
       groupedStream
         .aggregate(initializer = HllWrap.empty[V]) { case (kr, v, hll) => hll.add(v) }
+    }
+
+    def thetaXd(): KTable[KR, ThetaWrap[V]] = {
+      groupedStream
+        .aggregate(initializer = ThetaWrap.empty[V]) { case (kr, v, hll) => hll.add(v) }
     }
   }
 

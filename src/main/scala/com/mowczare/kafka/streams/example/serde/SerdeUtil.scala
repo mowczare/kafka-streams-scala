@@ -13,7 +13,6 @@ object SerdeUtil {
   implicit val hllGenCodec: GenCodec[HllSketch] =
     GenCodec.transformed[HllSketch, Array[Byte]](_.toCompactByteArray, HllSketch.heapify)
 
-
   /** Creates a Kafka Serde for provided type with the `GenCodec` defined. */
   implicit def codecToSerde[T >: Null : GenCodec]: Serde[T] = {
     val jsonOptions = JsonOptions(dateFormat = JsonDateFormat.EpochMillis)

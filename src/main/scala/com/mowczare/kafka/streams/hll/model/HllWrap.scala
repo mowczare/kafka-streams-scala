@@ -19,6 +19,7 @@ case class HllWrap[T](hll: HllSketch)(implicit asByteArray: AsByteArray[T]) {
 }
 
 object HllWrap {
+
   val monoid = new HyperLogLogMonoid(12)
 
   def empty[T: AsByteArray]: HllWrap[T] = new HllWrap(new HllSketch(12))

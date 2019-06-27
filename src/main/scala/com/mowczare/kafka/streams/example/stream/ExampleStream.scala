@@ -74,7 +74,7 @@ object ExampleStream {
       .to(outputTopic)(implicitly[Produced[Long, ThetaWrap[InputEvent]]])
   }
 
-  def streamTopologyFrequency(inputTopic: String, outputTopic: String)(builder: StreamsBuilder): Unit = {
+  def streamTopologyFrequency(capacity: Int)(inputTopic: String, outputTopic: String)(builder: StreamsBuilder): Unit = {
 
     import org.apache.kafka.streams.scala.Serdes._
     implicit val inputEventSerde: Serde[InputEvent] = SerdeUtil.codecToSerde[InputEvent]
@@ -84,7 +84,7 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
-      .frequencyXd(64)
+      .frequencyXd(capacity)
       .toStream
       .to(outputTopic)(implicitly[Produced[Long, ItemSketchWrap[InputEvent]]])
   }

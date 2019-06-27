@@ -55,7 +55,6 @@ object ExampleStream {
       .groupBy { case (key, event) => event.value % 2 }
       .hllXd()
       .toStream
-      .peek {case (k, v) => println(k, v)}
       .to(outputTopic)(implicitly[Produced[Long, HllWrap[InputEvent]]])
   }
 
@@ -72,7 +71,6 @@ object ExampleStream {
       .groupBy { case (key, event) => event.value % 2 }
       .thetaXd()
       .toStream
-      .peek {case (k, v) => println(k, v)}
       .to(outputTopic)(implicitly[Produced[Long, ThetaWrap[InputEvent]]])
   }
 
@@ -88,7 +86,6 @@ object ExampleStream {
       .groupBy { case (key, event) => event.value % 2 }
       .frequencyXd(64)
       .toStream
-      .peek {case (k, v) => println(k, v)}
       .to(outputTopic)(implicitly[Produced[Long, ItemSketchWrap[InputEvent]]])
   }
 }

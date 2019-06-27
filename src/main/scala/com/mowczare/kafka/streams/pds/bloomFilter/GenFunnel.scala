@@ -1,8 +1,8 @@
-package com.mowczare.kafka.streams.bloomFilter
+package com.mowczare.kafka.streams.pds.bloomFilter
 
 import com.avsystem.commons.serialization.GenCodec
 import com.google.common.hash.{Funnel, PrimitiveSink}
-import com.mowczare.kafka.streams.hll.hashing.{AsByteArray, PrimitiveSinkOutput}
+import com.mowczare.kafka.streams.pds.hashing.{AsByteArray, PrimitiveSinkOutput}
 
 class GenFunnel[T](implicit codec: GenCodec[T])
   extends Funnel[T] {

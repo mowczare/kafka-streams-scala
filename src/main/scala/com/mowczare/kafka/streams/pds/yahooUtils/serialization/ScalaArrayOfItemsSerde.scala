@@ -1,8 +1,9 @@
-package com.mowczare.kafka.streams.hll.model
-import com.avsystem.commons.jiop.JavaInterop._
+package com.mowczare.kafka.streams.pds.yahooUtils.serialization
+
+import com.avsystem.commons.jiop.JavaInterop.JList
 import com.yahoo.memory.Memory
 
-trait ScalaArrayOfitemsSerde[T] {
+trait ScalaArrayOfItemsSerde[T] {
 
   def serializeToByteArray(items: JList[T]): Array[Byte]
   def deserializeFromMemory(mem: Memory, numItems: Int): JList[T]

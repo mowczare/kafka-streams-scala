@@ -1,4 +1,4 @@
-package com.mowczare.kafka.streams.hll.hashing
+package com.mowczare.kafka.streams.pds.hashing
 
 import com.avsystem.commons.serialization.GenCodec
 

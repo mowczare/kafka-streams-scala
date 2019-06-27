@@ -1,24 +1,21 @@
-package com.mowczare.kafka.streams.hll.model;
+package com.mowczare.kafka.streams.pds.yahooUtils.serialization;
 
-import com.google.common.collect.Lists;
 import com.yahoo.memory.Memory;
 import com.yahoo.sketches.ArrayOfItemsSerDe;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
-public class DataSerdeWrap<T> extends ArrayOfItemsSerDe<T> {
+public class DataSerdeScalaWrap<T> extends ArrayOfItemsSerDe<T> {
 
-    ScalaArrayOfitemsSerde<T> real;
-    public DataSerdeWrap(ScalaArrayOfitemsSerde<T> real) {
+    private ScalaArrayOfItemsSerde<T> real;
+
+    public DataSerdeScalaWrap(ScalaArrayOfItemsSerde<T> real) {
         this.real = real;
     }
 
     @Override
     public byte[] serializeToByteArray(T[] items) {
         return real.serializeToByteArray(Arrays.asList(items));
-//        return new byte[0];
     }
 
     @Override

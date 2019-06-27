@@ -1,6 +1,6 @@
-package com.mowczare.kafka.streams.hll.model
+package com.mowczare.kafka.streams.pds.yahooUtils.serialization
 
-import java.io.{DataInputStream, InputStream}
+import java.io.InputStream
 
 import com.yahoo.memory.{Memory, UnsafeUtil}
 
@@ -16,12 +16,7 @@ class DummyMemoryInputStream(memory: Memory) extends InputStream {
         val res = memory.getByte(offsetBytes)
         offsetBytes += 1
         res
-      case Failure(_) =>
-        println("xddd")
-        -1
+      case Failure(_) => -1
     }
-
   }
 }
-
-//class MemoryDataInputStream(memory: Memory) extends DataInputStream

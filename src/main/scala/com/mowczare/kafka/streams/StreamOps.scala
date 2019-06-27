@@ -2,11 +2,11 @@ package com.mowczare.kafka.streams
 
 import com.avsystem.commons.serialization.GenCodec
 import com.mowczare.kafka.streams.StreamOps.{KGroupedStreamExt, KGroupedStreamExtVGenCodec}
-import com.mowczare.kafka.streams.hll.hashing.AsByteArray
-import com.mowczare.kafka.streams.hll.model.{HllWrap, ItemSketchWrap, ThetaWrap}
+import com.mowczare.kafka.streams.pds.hashing.AsByteArray
+import com.mowczare.kafka.streams.pds.yahooWrappers.{HllWrap, ItemSketchWrap, ThetaWrap}
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.scala.kstream.{KGroupedStream, KTable}
-
+import com.mowczare.kafka.streams.example.serde.SerdeUtil._
 import scala.reflect.ClassTag
 
 trait StreamOps {
@@ -24,7 +24,6 @@ object StreamOps extends StreamOps {
 
   class KGroupedStreamExt[KR: Serde, V: AsByteArray](groupedStream: KGroupedStream[KR, V]) {
 
-    implicit val hllSerde: Serde[HllWrap[V]] = HllWrap.hllSerde
 
     def hllXd(): KTable[KR, HllWrap[V]] = {
       groupedStream
@@ -41,9 +40,9 @@ object StreamOps extends StreamOps {
 
   class KGroupedStreamExtVGenCodec[KR: Serde, V <: AnyRef: GenCodec: ClassTag](groupedStream: KGroupedStream[KR, V]) {
 
-    def freaquencyXd(): KTable[KR, ItemSketchWrap[V]] = {
+    def frequencyXd(capacity: Int): KTable[KR, ItemSketchWrap[V]] = {
       groupedStream
-        .aggregate(initializer = ItemSketchWrap.empty[V]) { case (kr, v, hll) => hll.add(v) }
+        .aggregate(initializer = ItemSketchWrap.empty[V](capacity)) { case (kr, v, hll) => hll.add(v) }
     }
   }
 

@@ -6,8 +6,7 @@ import com.mowczare.kafka.streams.example.environment.KafkaSettings
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
 import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyHll
-import com.mowczare.kafka.streams.hll.hashing.GenCodecHashing._
-import com.mowczare.kafka.streams.hll.model.{HllWrap, ItemSketchWrap, ThetaWrap}
+import com.mowczare.kafka.streams.pds.yahooWrappers.ItemSketchWrap
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
@@ -47,12 +46,13 @@ object ExampleStream {
 
     import org.apache.kafka.streams.scala.Serdes._
     implicit val inputEventSerde: Serde[InputEvent] = SerdeUtil.codecToSerde[InputEvent]
+    import SerdeUtil._
     import org.apache.kafka.streams.scala.ImplicitConversions._
 
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
-      .freaquencyXd()
+      .frequencyXd(64)
       .toStream
       .peek {case (k, v) => println(k, v)}
       .to(outputTopic)(implicitly[Produced[Long, ItemSketchWrap[InputEvent]]])

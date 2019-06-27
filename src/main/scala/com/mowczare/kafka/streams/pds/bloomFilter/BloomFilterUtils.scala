@@ -1,11 +1,11 @@
-package com.mowczare.kafka.streams.bloomFilter
+package com.mowczare.kafka.streams.pds.bloomFilter
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 
 import com.avsystem.commons.serialization.GenCodec
 import com.google.common.hash.{BloomFilter, Funnel}
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.hll.hashing.AsByteArray
+import com.mowczare.kafka.streams.pds.hashing.AsByteArray
 import org.apache.kafka.common.serialization.Serde
 
 object BloomFilterUtils {

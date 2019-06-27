@@ -1,4 +1,4 @@
-package com.mowczare.kafka.streams.bloomFilter
+package com.mowczare.kafka.streams.pds.bloomFilter
 
 import org.apache.kafka.streams.kstream.Transformer
 import org.apache.kafka.streams.processor.{Processor, ProcessorContext}

@@ -1,7 +1,7 @@
-package com.mowczare.kafka.streams.bloomFilter
+package com.mowczare.kafka.streams.pds.bloomFilter
 
 import com.google.common.hash.BloomFilter
-import com.mowczare.kafka.streams.hll.hashing.AsByteArray
+import com.mowczare.kafka.streams.pds.hashing.AsByteArray
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.state.{KeyValueStore, StoreBuilder, Stores}
 

@@ -14,7 +14,7 @@ trait YahooGenCodecs {
   implicit val hllGenCodec: GenCodec[HllSketch] =
     GenCodec.transformed[HllSketch, Array[Byte]](_.toCompactByteArray, HllSketch.heapify)
 
-  implicit def itemSketchGencodec[T : GenCodec: ClassTag]: GenCodec[ItemsSketch[T]] =
+  implicit def itemSketchGencodec[T: GenCodec : ClassTag]: GenCodec[ItemsSketch[T]] =
     GenCodec.transformed[ItemsSketch[T], Array[Byte]](_.toByteArray(new DataSerdeScalaWrap(new GencodecArrayOfItemsSerDe[T]())),
       byteArray =>
         ItemsSketch.getInstance(Memory.wrap(byteArray), new DataSerdeScalaWrap(new GencodecArrayOfItemsSerDe[T]()))
@@ -27,4 +27,4 @@ trait YahooGenCodecs {
     )
 }
 
-object YahooGenCodecs  extends YahooGenCodecs
+object YahooGenCodecs extends YahooGenCodecs

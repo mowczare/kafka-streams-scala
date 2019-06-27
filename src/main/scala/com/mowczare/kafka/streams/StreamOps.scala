@@ -24,7 +24,6 @@ object StreamOps extends StreamOps {
 
   class KGroupedStreamExt[KR: Serde, V: AsByteArray](groupedStream: KGroupedStream[KR, V]) {
 
-
     def hllXd(): KTable[KR, HllWrap[V]] = {
       groupedStream
         .aggregate(initializer = HllWrap.empty[V]) { case (kr, v, hll) => hll.add(v) }

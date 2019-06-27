@@ -1,11 +1,9 @@
 package com.mowczare.kafka.streams.pds.yahooWrappers
 
 import com.avsystem.commons.serialization.GenCodec
-import com.mowczare.kafka.streams.example.serde.SerdeUtil
 import com.mowczare.kafka.streams.pds.hashing.AsByteArray
 import com.mowczare.kafka.streams.pds.yahooUtils.YahooGenCodecs
 import com.yahoo.sketches.theta.UpdateSketch
-import org.apache.kafka.common.serialization.Serde
 
 case class ThetaWrap[T](updateSketch: UpdateSketch)(
     implicit asByteArray: AsByteArray[T]
@@ -28,8 +26,4 @@ object ThetaWrap {
       _.updateSketch,
       ThetaWrap(_)
     )
-
-  implicit def thetaSerde[T: AsByteArray]: Serde[ThetaWrap[T]] =
-    SerdeUtil.codecToSerde[ThetaWrap[T]]
-
 }

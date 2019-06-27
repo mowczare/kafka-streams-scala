@@ -3,11 +3,12 @@ package com.mowczare.kafka.streams.example.stream
 import com.madewithtea.mockedstreams.MockedStreams
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.pds.yahooWrappers.ItemSketchWrap
+import com.mowczare.kafka.streams.pds.yahooWrappers.HllWrap
 import org.apache.kafka.streams.scala.Serdes
 import org.scalatest.{FunSuite, Matchers}
 
 class HllStreamTest extends FunSuite with Matchers {
+  import com.mowczare.kafka.streams.pds.hashing.GenCodecHashing._
 
   val inputTestTopic = "input-test"
   val outputTestTopic = "output-test"
@@ -20,10 +21,11 @@ class HllStreamTest extends FunSuite with Matchers {
       ("test", InputEvent(4))
     )
 
-    MockedStreams()
+    val finalResult = MockedStreams()
       .topology(ExampleStream.streamTopologyHll(inputTestTopic, outputTestTopic))
       .input(inputTestTopic, Serdes.String, SerdeUtil.codecToSerde[InputEvent], inputRecords)
-      .output[Long, ItemSketchWrap[InputEvent]](outputTestTopic, Serdes.Long, SerdeUtil.codecToSerde[ItemSketchWrap[InputEvent]], 1000) shouldBe IndexedSeq.empty
+      .output[Long, HllWrap[InputEvent]](outputTestTopic, Serdes.Long, SerdeUtil.codecToSerde[HllWrap[InputEvent]], 1000) shouldBe (Seq.empty)
+
   }
 
 }

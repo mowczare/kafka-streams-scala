@@ -6,7 +6,9 @@ import com.mowczare.kafka.streams.example.environment.KafkaSettings
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
 import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyHll
-import com.mowczare.kafka.streams.pds.yahooWrappers.{HllWrap, ItemSketchWrap, ThetaWrap}
+import com.mowczare.kafka.streams.pds.frequency.ItemSketchWrap
+import com.mowczare.kafka.streams.pds.hll.HllWrap
+import com.mowczare.kafka.streams.pds.theta.ThetaWrap
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
@@ -53,7 +55,7 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
-      .hllXd()
+      .hll()
       .toStream
       .to(outputTopic)(implicitly[Produced[Long, HllWrap[InputEvent]]])
   }
@@ -69,7 +71,7 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
-      .thetaXd()
+      .theta()
       .toStream
       .to(outputTopic)(implicitly[Produced[Long, ThetaWrap[InputEvent]]])
   }
@@ -84,7 +86,7 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
-      .frequencyXd(capacity)
+      .frequency(capacity)
       .toStream
       .to(outputTopic)(implicitly[Produced[Long, ItemSketchWrap[InputEvent]]])
   }

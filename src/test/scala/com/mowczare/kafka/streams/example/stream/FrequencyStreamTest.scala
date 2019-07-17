@@ -3,7 +3,7 @@ package com.mowczare.kafka.streams.example.stream
 import com.madewithtea.mockedstreams.MockedStreams
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.pds.yahooWrappers.{HllWrap, ItemSketchWrap}
+import com.mowczare.kafka.streams.pds.frequency.ItemSketchWrap
 import com.yahoo.sketches.frequencies.ErrorType
 import org.apache.kafka.streams.scala.Serdes
 import org.scalatest.{FunSuite, Matchers}

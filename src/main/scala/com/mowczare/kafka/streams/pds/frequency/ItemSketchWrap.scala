@@ -1,11 +1,14 @@
-package com.mowczare.kafka.streams.pds.yahooWrappers
+package com.mowczare.kafka.streams.pds.frequency
 
 import com.avsystem.commons.serialization.GenCodec
-import com.mowczare.kafka.streams.pds.yahooUtils.YahooGenCodecs
+import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCodecs
 import com.yahoo.sketches.frequencies.ItemsSketch
 
 import scala.reflect.ClassTag
 
+trait FrequencySketch {
+//  def add
+}
 
 case class ItemSketchWrap[T](itemSketch: ItemsSketch[T]) {
 

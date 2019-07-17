@@ -7,7 +7,6 @@ import com.google.common.hash.PrimitiveSink
 
 class PrimitiveSinkOutput(primitiveSink: PrimitiveSink) extends Output {
 
-
   override def writeNull(): Unit = {}
 
   override def writeSimple(): SimpleOutput = new SimpleOutput {

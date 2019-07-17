@@ -6,11 +6,12 @@ import scala.collection.mutable.ListBuffer
 
 object GenCodecHashing {
 
-  implicit def asByteArray[T](implicit genCodec: GenCodec[T]): AsByteArray[T] = (t: T) => {
+  implicit def hasByteArrayContent[T](implicit genCodec: GenCodec[T]): HasByteArrayContent[T] = (t: T) => {
     val accumulator = new ListBuffer[Byte]()
     genCodec.write(new Value2BytesOutput(accumulator), t)
     accumulator.toArray
   }
 
+  implicit def funnel[T: GenCodec]: GenFunnel[T] = new GenFunnel[T]()
 
 }

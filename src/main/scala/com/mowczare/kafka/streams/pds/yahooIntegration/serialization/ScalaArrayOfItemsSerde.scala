@@ -1,4 +1,4 @@
-package com.mowczare.kafka.streams.pds.yahooUtils.serialization
+package com.mowczare.kafka.streams.pds.yahooIntegration.serialization
 
 import com.avsystem.commons.jiop.JavaInterop.JList
 import com.yahoo.memory.Memory

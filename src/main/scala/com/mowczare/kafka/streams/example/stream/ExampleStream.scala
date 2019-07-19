@@ -1,14 +1,15 @@
 package com.mowczare.kafka.streams.example.stream
 
 import com.avsystem.commons._
+import com.avsystem.commons.serialization.GenCodec
 import com.mowczare.kafka.streams.StreamOps._
 import com.mowczare.kafka.streams.example.environment.KafkaSettings
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
 import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyHll
 import com.mowczare.kafka.streams.pds.frequency.ItemSketchWrap
-import com.mowczare.kafka.streams.pds.hll.HllWrap
-import com.mowczare.kafka.streams.pds.theta.ThetaWrap
+import com.mowczare.kafka.streams.pds.hll.Hll
+import com.mowczare.kafka.streams.pds.theta.UpdateTheta
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.scala.StreamsBuilder
@@ -49,15 +50,15 @@ object ExampleStream {
     import org.apache.kafka.streams.scala.Serdes._
     implicit val inputEventSerde: Serde[InputEvent] = SerdeUtil.codecToSerde[InputEvent]
     import SerdeUtil._
-    import org.apache.kafka.streams.scala.ImplicitConversions._
     import com.mowczare.kafka.streams.pds.hashing.GenCodecHashing._
+    import org.apache.kafka.streams.scala.ImplicitConversions._
 
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
       .hll()
       .toStream
-      .to(outputTopic)(implicitly[Produced[Long, HllWrap[InputEvent]]])
+      .to(outputTopic)(implicitly[Produced[Long, Hll[InputEvent]]])
   }
 
   def streamTopologyTheta(inputTopic: String, outputTopic: String)(builder: StreamsBuilder): Unit = {
@@ -65,15 +66,15 @@ object ExampleStream {
     import org.apache.kafka.streams.scala.Serdes._
     implicit val inputEventSerde: Serde[InputEvent] = SerdeUtil.codecToSerde[InputEvent]
     import SerdeUtil._
-    import org.apache.kafka.streams.scala.ImplicitConversions._
     import com.mowczare.kafka.streams.pds.hashing.GenCodecHashing._
+    import org.apache.kafka.streams.scala.ImplicitConversions._
 
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
       .theta()
       .toStream
-      .to(outputTopic)(implicitly[Produced[Long, ThetaWrap[InputEvent]]])
+      .to(outputTopic)(implicitly[Produced[Long, UpdateTheta[InputEvent]]])
   }
 
   def streamTopologyFrequency(capacity: Int)(inputTopic: String, outputTopic: String)(builder: StreamsBuilder): Unit = {

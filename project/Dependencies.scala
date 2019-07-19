@@ -32,7 +32,9 @@ object Dependencies {
 
     "com.twitter" %% "algebird-core" % twitterVersion,
     "com.google.guava" % "guava" % guavaVersion,
-    "com.yahoo.datasketches" % "sketches-core" % "0.13.4"
+    "com.yahoo.datasketches" % "sketches-core" % "0.13.4",
+    "joda-time" % "joda-time" % "2.10.3"
+    
   )
 
   val all: Seq[ModuleID] = kafkaDeps ++ avSystemDeps ++ otherDeps

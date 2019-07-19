@@ -3,7 +3,7 @@ package com.mowczare.kafka.streams.example.stream
 import com.madewithtea.mockedstreams.MockedStreams
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.pds.hll.HllWrap
+import com.mowczare.kafka.streams.pds.hll.Hll
 import org.apache.kafka.streams.scala.Serdes
 import org.scalatest.{FunSuite, Matchers}
 
@@ -28,17 +28,27 @@ class HllStreamTest extends FunSuite with Matchers {
     )
 
     val streamResult = MockedStreams()
-      .topology(ExampleStream.streamTopologyHll(inputTestTopic, outputTestTopic))
-      .input(inputTestTopic, Serdes.String, SerdeUtil.codecToSerde[InputEvent], inputRecords)
-      .output[Long, HllWrap[InputEvent]](outputTestTopic, Serdes.Long, SerdeUtil.codecToSerde[HllWrap[InputEvent]], 1000)
+      .topology(
+        ExampleStream.streamTopologyHll(inputTestTopic, outputTestTopic)
+      )
+      .input(
+        inputTestTopic,
+        Serdes.String,
+        SerdeUtil.codecToSerde[InputEvent],
+        inputRecords
+      )
+      .output[Long, Hll[InputEvent]](
+        outputTestTopic,
+        Serdes.Long,
+        SerdeUtil.codecToSerde[Hll[InputEvent]],
+        1000
+      )
 
-    val finalResult = streamResult.groupBy(_._1).mapValues(_.last._2.hll.getEstimate)
+    val finalResult =
+      streamResult.groupBy(_._1).mapValues(_.last._2.uniqueCountEstimate)
 
-
-    assert(almostEqual(finalResult(0),1))
-    assert(almostEqual(finalResult(1),3))
-
-
+    assert(almostEqual(finalResult(0).count, 1))
+    assert(almostEqual(finalResult(1).count, 3))
 
   }
 

@@ -2,13 +2,13 @@ package com.mowczare.kafka.streams
 
 import com.avsystem.commons.serialization.GenCodec
 import com.mowczare.kafka.streams.StreamOps.{KGroupedStreamExt, KGroupedStreamExtVGenCodec}
-import com.mowczare.kafka.streams.pds.hashing.HasByteArrayContent
-import org.apache.kafka.common.serialization.Serde
-import org.apache.kafka.streams.scala.kstream.{KGroupedStream, KTable}
 import com.mowczare.kafka.streams.example.serde.SerdeUtil._
 import com.mowczare.kafka.streams.pds.frequency.ItemSketchWrap
-import com.mowczare.kafka.streams.pds.hll.HllWrap
-import com.mowczare.kafka.streams.pds.theta.ThetaWrap
+import com.mowczare.kafka.streams.pds.hashing.HasByteArrayContent
+import com.mowczare.kafka.streams.pds.hll.Hll
+import com.mowczare.kafka.streams.pds.theta.UpdateTheta
+import org.apache.kafka.common.serialization.Serde
+import org.apache.kafka.streams.scala.kstream.{KGroupedStream, KTable}
 
 import scala.reflect.ClassTag
 
@@ -33,16 +33,16 @@ object StreamOps extends StreamOps {
       groupedStream: KGroupedStream[KR, V]
   ) {
 
-    def hll(): KTable[KR, HllWrap[V]] = {
+    def hll(): KTable[KR, Hll[V]] = {
       groupedStream
-        .aggregate(initializer = HllWrap.empty[V]) {
+        .aggregate(initializer = Hll.empty[V]()) {
           case (kr, v, hll) => hll.add(v)
         }
     }
 
-    def theta(): KTable[KR, ThetaWrap[V]] = {
+    def theta(): KTable[KR, UpdateTheta[V]] = {
       groupedStream
-        .aggregate(initializer = ThetaWrap.empty[V]) {
+        .aggregate(initializer = UpdateTheta.empty[V]) {
           case (kr, v, hll) => hll.add(v)
         }
     }

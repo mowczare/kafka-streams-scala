@@ -3,7 +3,7 @@ package com.mowczare.kafka.streams.example.stream
 import com.madewithtea.mockedstreams.MockedStreams
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.pds.theta.ThetaWrap
+import com.mowczare.kafka.streams.pds.theta.UpdateTheta
 import org.apache.kafka.streams.scala.Serdes
 import org.scalatest.{FunSuite, Matchers}
 
@@ -28,19 +28,28 @@ class ThetaStreamTest extends FunSuite with Matchers {
     )
 
     val streamResult = MockedStreams()
-      .topology(ExampleStream.streamTopologyTheta(inputTestTopic, outputTestTopic))
-      .input(inputTestTopic, Serdes.String, SerdeUtil.codecToSerde[InputEvent], inputRecords)
-      .output[Long, ThetaWrap[InputEvent]](outputTestTopic, Serdes.Long, SerdeUtil.codecToSerde[ThetaWrap[InputEvent]], 1000)
+      .topology(
+        ExampleStream.streamTopologyTheta(inputTestTopic, outputTestTopic)
+      )
+      .input(
+        inputTestTopic,
+        Serdes.String,
+        SerdeUtil.codecToSerde[InputEvent],
+        inputRecords
+      )
+      .output[Long, UpdateTheta[InputEvent]](
+        outputTestTopic,
+        Serdes.Long,
+        SerdeUtil.codecToSerde[UpdateTheta[InputEvent]],
+        1000
+      )
 
-    val finalResult = streamResult.groupBy(_._1).mapValues(_.last._2.updateSketch.getEstimate)
+    val finalResult =
+      streamResult.groupBy(_._1).mapValues(_.last._2.uniqueCountEstimate)
 
-
-    assert(almostEqual(finalResult(0),1))
-    assert(almostEqual(finalResult(1),3))
-
-
+    assert(almostEqual(finalResult(0).count, 1))
+    assert(almostEqual(finalResult(1).count, 3))
 
   }
 
 }
-

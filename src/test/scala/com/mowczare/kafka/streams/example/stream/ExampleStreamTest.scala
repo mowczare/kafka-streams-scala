@@ -5,8 +5,6 @@ import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
 import org.apache.kafka.streams.scala.Serdes
 import org.scalatest.{FunSuite, Matchers}
-import com.mowczare.kafka.streams.pds.hashing.GenCodecHashing._
-import com.mowczare.kafka.streams.pds.hll.HllWrap
 
 class ExampleStreamTest extends FunSuite with Matchers {
 

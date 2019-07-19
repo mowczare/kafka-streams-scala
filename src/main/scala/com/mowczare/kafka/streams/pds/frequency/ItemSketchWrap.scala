@@ -6,6 +6,7 @@ import com.yahoo.sketches.frequencies.ItemsSketch
 
 import scala.reflect.ClassTag
 
+//TODO
 case class ItemSketchWrap[T](itemSketch: ItemsSketch[T]) {
 
   def add(elem: T): ItemSketchWrap[T] = {

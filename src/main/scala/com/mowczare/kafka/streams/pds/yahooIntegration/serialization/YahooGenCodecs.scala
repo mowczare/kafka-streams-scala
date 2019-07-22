@@ -1,11 +1,23 @@
 package com.mowczare.kafka.streams.pds.yahooIntegration.serialization
 
+import java.util.Comparator
+
 import com.avsystem.commons.serialization.GenCodec
 import com.yahoo.memory.Memory
-import com.yahoo.sketches.frequencies.ItemsSketch
+import com.yahoo.sketches.frequencies.{ItemsSketch => FItemsSketch}
+import com.yahoo.sketches.quantiles.{ItemsSketch => QItemsSketch}
+import com.yahoo.sketches.quantiles.{ItemsUnion => QItemsUnion}
 import com.yahoo.sketches.hll.{HllSketch, Union => HllUnion}
-import com.yahoo.sketches.theta.{SetOperation, Sketch, Sketches, UpdateSketch, CompactSketch => ThetaCompactSketch, Union => ThetaUnion}
+import com.yahoo.sketches.theta.{
+  SetOperation,
+  Sketch,
+  Sketches,
+  UpdateSketch,
+  CompactSketch => ThetaCompactSketch,
+  Union => ThetaUnion
+}
 
+import scala.math.Ordering._
 import scala.reflect.ClassTag
 
 trait YahooGenCodecs {
@@ -22,18 +34,60 @@ trait YahooGenCodecs {
       HllUnion.heapify
     )
 
-  implicit def itemSketchGencodec[T: GenCodec: ClassTag]
-    : GenCodec[ItemsSketch[T]] =
-    GenCodec.transformed[ItemsSketch[T], Array[Byte]](
+  implicit def fItemSketchGencodec[T: GenCodec: ClassTag]
+    : GenCodec[FItemsSketch[T]] =
+    GenCodec.transformed[FItemsSketch[T], Array[Byte]](
       _.toByteArray(
         ArrayOfItemsSerDeOps.arrayOfItemsSerDe
       ),
       byteArray =>
-        ItemsSketch.getInstance(
+        FItemsSketch.getInstance(
           Memory.wrap(byteArray),
           ArrayOfItemsSerDeOps.arrayOfItemsSerDe
         )
     )
+
+  implicit def fItemsUnionGencodec[T: GenCodec: ClassTag]
+  : GenCodec[FItemsSketch[T]] =
+    GenCodec.transformed[FItemsSketch[T], Array[Byte]](
+      _.toByteArray(
+        ArrayOfItemsSerDeOps.arrayOfItemsSerDe
+      ),
+      byteArray =>
+        FItemsSketch.getInstance(
+          Memory.wrap(byteArray),
+          ArrayOfItemsSerDeOps.arrayOfItemsSerDe
+        )
+    )
+
+  implicit def qItemSketchGencodec[T: GenCodec: ClassTag: Ordering]
+    : GenCodec[QItemsSketch[T]] =
+    GenCodec.transformed[QItemsSketch[T], Array[Byte]](
+      _.toByteArray(
+        ArrayOfItemsSerDeOps.arrayOfItemsSerDe
+      ),
+      byteArray =>
+        QItemsSketch.getInstance(
+          Memory.wrap(byteArray),
+          implicitly[Comparator[T]],
+          ArrayOfItemsSerDeOps.arrayOfItemsSerDe
+        )
+    )
+
+  implicit def qItemUnionGencodec[T: GenCodec: ClassTag: Ordering]
+  : GenCodec[QItemsUnion[T]] =
+    GenCodec.transformed[QItemsUnion[T], Array[Byte]](
+      _.toByteArray(
+        ArrayOfItemsSerDeOps.arrayOfItemsSerDe
+      ),
+      byteArray =>
+        QItemsUnion.getInstance(
+          Memory.wrap(byteArray),
+          implicitly[Comparator[T]],
+          ArrayOfItemsSerDeOps.arrayOfItemsSerDe
+        )
+    )
+
 
   implicit val updateSketchGenCodec: GenCodec[UpdateSketch] =
     GenCodec.transformed[UpdateSketch, Array[Byte]](
@@ -44,7 +98,8 @@ trait YahooGenCodecs {
   implicit val thetaUnionGenCodec: GenCodec[ThetaUnion] =
     GenCodec.transformed[ThetaUnion, Array[Byte]](
       _.toByteArray,
-      byteArray => SetOperation.heapify(Memory.wrap(byteArray)).asInstanceOf[ThetaUnion]
+      byteArray =>
+        SetOperation.heapify(Memory.wrap(byteArray)).asInstanceOf[ThetaUnion]
     )
 
   implicit val sketchCodec: GenCodec[Sketch] = {

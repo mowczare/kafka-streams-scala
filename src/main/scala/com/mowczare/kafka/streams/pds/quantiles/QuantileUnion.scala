@@ -3,6 +3,7 @@ package com.mowczare.kafka.streams.pds.quantiles
 import java.util.Comparator
 
 import com.avsystem.commons.serialization.GenCodec
+import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCodecs
 import com.yahoo.sketches.quantiles.ItemsUnion
 
 import scala.reflect.ClassTag
@@ -24,8 +25,8 @@ class QuantileUnion[T: ClassTag](
   def result: Quantile[T] = new Quantile[T](internal.getResult)
 
 }
-object QuantileUnion {
-  def empty[T: Ordering](quantilesNum: Int): QuantileUnion[T] = {
+object QuantileUnion extends YahooGenCodecs {
+  def empty[T: Ordering: ClassTag](quantilesNum: Int): QuantileUnion[T] = {
     new QuantileUnion(
       ItemsUnion.getInstance(quantilesNum, implicitly[Comparator[T]])
     )

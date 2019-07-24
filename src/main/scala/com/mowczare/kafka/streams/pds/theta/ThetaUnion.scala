@@ -5,7 +5,7 @@ import com.mowczare.kafka.streams.pds.hashing.HasByteArrayContent
 import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCodecs
 import com.yahoo.sketches.theta.{SetOperation, Union}
 
-class ThetaUnion[T: HasByteArrayContent](private[theta] val internal: Union) {
+class ThetaUnion[T: HasByteArrayContent](val internal: Union) {
 
   def add(elem: T): ThetaUnion[T] = {
     internal.update(HasByteArrayContent[T].byteArrayContent(elem))

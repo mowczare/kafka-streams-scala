@@ -16,7 +16,7 @@ class ThetaStreamTest extends FunSuite with Matchers {
   val outputTestTopic = "output-test"
 
   def almostEqual(result: Double, shouldBe: Double): Boolean = {
-    Math.abs(result - shouldBe) / shouldBe < admissibleError
+    Math.abs((result - shouldBe) / shouldBe) < admissibleError
   }
 
   test("Sample test") {

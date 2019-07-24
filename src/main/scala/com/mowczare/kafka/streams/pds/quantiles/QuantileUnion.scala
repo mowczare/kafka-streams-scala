@@ -8,9 +8,7 @@ import com.yahoo.sketches.quantiles.ItemsUnion
 
 import scala.reflect.ClassTag
 
-class QuantileUnion[T: ClassTag](
-    private[quantiles] val internal: ItemsUnion[T]
-) {
+class QuantileUnion[T: ClassTag](val internal: ItemsUnion[T]) {
 
   def add(elem: T): QuantileUnion[T] = {
     internal.update(elem)

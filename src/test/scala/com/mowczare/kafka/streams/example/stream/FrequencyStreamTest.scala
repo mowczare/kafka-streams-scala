@@ -15,9 +15,6 @@ class FrequencyStreamTest extends FunSuite with Matchers {
   val inputTestTopic = "input-test"
   val outputTestTopic = "output-test"
 
-  def almostEqual(result: Double, shouldBe: Double): Boolean = {
-    Math.abs(result - shouldBe) / shouldBe < admissibleError
-  }
 
   test("Sample test") {
     val inputRecords: Seq[(String, InputEvent)] = Seq(
@@ -29,7 +26,7 @@ class FrequencyStreamTest extends FunSuite with Matchers {
     val streamResult = MockedStreams()
       .topology(
         ExampleStream
-          .streamTopologyFrequency(4)(inputTestTopic, outputTestTopic)
+          .streamTopologyFrequency(64)(inputTestTopic, outputTestTopic)
       )
       .input(
         inputTestTopic,

@@ -7,7 +7,7 @@ import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCod
 import com.yahoo.sketches.theta.UpdateSketch
 
 class UpdateTheta[T: HasByteArrayContent](
-    private[theta] val internal: UpdateSketch
+    val internal: UpdateSketch
 ) {
 
   def add(elem: T): UpdateTheta[T] = {

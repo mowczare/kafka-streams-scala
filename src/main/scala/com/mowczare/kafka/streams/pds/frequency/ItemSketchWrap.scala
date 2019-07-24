@@ -7,7 +7,7 @@ import com.yahoo.sketches.frequencies.ItemsSketch
 import scala.reflect.ClassTag
 
 //TODO
-case class ItemSketchWrap[T](itemSketch: ItemsSketch[T]) {
+class ItemSketchWrap[T](val itemSketch: ItemsSketch[T]) {
 
   def add(elem: T): ItemSketchWrap[T] = {
     itemSketch.update(elem)
@@ -23,12 +23,12 @@ case class ItemSketchWrap[T](itemSketch: ItemsSketch[T]) {
 object ItemSketchWrap {
   import YahooGenCodecs._
 
-  def empty[T](size: Int): ItemSketchWrap[T] = ItemSketchWrap(new ItemsSketch[T](size)) //some capacity move it to api in the future
+  def empty[T](size: Int): ItemSketchWrap[T] = new ItemSketchWrap(new ItemsSketch[T](size)) //some capacity move it to api in the future
 
   implicit def genCodec[T : GenCodec : ClassTag]: GenCodec[ItemSketchWrap[T]] =
     GenCodec.transformed[ItemSketchWrap[T], ItemsSketch[T]](
     _.itemSketch,
-    ItemSketchWrap(_)
+    new ItemSketchWrap(_)
   )
 }
 

@@ -30,28 +30,28 @@ object StreamOps extends StreamOps {
   import org.apache.kafka.streams.scala.ImplicitConversions._
 
   class KGroupedStreamExt[KR: Serde, V: HasByteArrayContent](
-      groupedStream: KGroupedStream[KR, V]
-  ) {
+      val groupedStream: KGroupedStream[KR, V]
+  ) extends AnyVal {
 
     def hll(): KTable[KR, Hll[V]] = {
       groupedStream
         .aggregate(initializer = Hll.empty[V]()) {
-          case (kr, v, hll) => hll.add(v)
+          case (_, v, hll) => hll.add(v)
         }
     }
 
     def theta(): KTable[KR, UpdateTheta[V]] = {
       groupedStream
         .aggregate(initializer = UpdateTheta.empty[V]) {
-          case (kr, v, hll) => hll.add(v)
+          case (_, v, hll) => hll.add(v)
         }
     }
 
   }
 
   class KGroupedStreamExtVGenCodec[KR: Serde, V <: AnyRef: GenCodec: ClassTag](
-      groupedStream: KGroupedStream[KR, V]
-  ) {
+      val groupedStream: KGroupedStream[KR, V]
+  ) extends AnyVal  {
 
     def frequency(capacity: Int): KTable[KR, ItemSketchWrap[V]] = {
       groupedStream

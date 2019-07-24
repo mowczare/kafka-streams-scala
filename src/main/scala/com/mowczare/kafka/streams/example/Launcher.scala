@@ -16,7 +16,7 @@ object Launcher extends App {
     bootstrapServers = "localhost:9093",
     localStateDir = "/tmp/kafka-streams",
     streamThreads = 4,
-    partitions = 1,
+    partitions = 4,
     replicationFactor = 1,
     inputTopic = "kafka-streams-input",
     outputTopic = "kafka-streams-output",

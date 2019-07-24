@@ -24,7 +24,8 @@ final class InputEventProducer(kafkaSettings: KafkaSettings) {
   private val entityIds: ISeq[String] = (1 to 1000).map(i => s"Entity-$i")
 
   private def inputEvent(): InputEvent = {
-    InputEvent((Random.nextGaussian() * 2000).toLong - 1000L)
+    InputEvent(
+      (Random.nextGaussian() * 2000).toLong - 1000L)
   }
 
   private def inputRecord(id: String): ProducerRecord[String, Array[Byte]] = {

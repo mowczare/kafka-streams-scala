@@ -1,9 +1,10 @@
 package com.mowczare.kafka.streams.example.serde
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
 import java.nio.charset.StandardCharsets
 
 import com.avsystem.commons._
-import com.avsystem.commons.serialization.GenCodec
+import com.avsystem.commons.serialization.{GenCodec, StreamInput, StreamOutput}
 import com.avsystem.commons.serialization.json.{JsonDateFormat, JsonOptions, JsonStringInput, JsonStringOutput}
 import org.apache.kafka.common.serialization.{Deserializer, Serde, Serdes, Serializer}
 
@@ -19,20 +20,22 @@ object SerdeUtil {
       override def close(): Unit = ()
 
       override def serialize(topic: String, data: T): Array[Byte] = {
-        JsonStringOutput.write(data, jsonOptions).getBytes(StandardCharsets.UTF_8)
+        val array = new ByteArrayOutputStream()
+        GenCodec[T].write(new StreamOutput(new DataOutputStream(array)), data)
+        array.toByteArray
       }
     }
+
     val deserializer = new Deserializer[T] {
       override def configure(configs: JMap[String, _], isKey: Boolean): Unit = ()
 
       override def close(): Unit = ()
 
       override def deserialize(topic: String, data: Array[Byte]): T = {
-        data.opt.map(d => JsonStringInput.read[T](new String(d, StandardCharsets.UTF_8), jsonOptions)).orNull
+        val input = new ByteArrayInputStream(data)
+        GenCodec[T].read(new StreamInput(new DataInputStream(input)))
       }
     }
     Serdes.serdeFrom(serializer, deserializer)
   }
-
-
 }

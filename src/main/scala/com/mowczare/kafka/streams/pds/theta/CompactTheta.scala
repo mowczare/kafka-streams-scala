@@ -5,7 +5,7 @@ import com.mowczare.kafka.streams.pds.model.UniqueCount
 import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCodecs
 import com.yahoo.sketches.theta.CompactSketch
 
-class CompactTheta(private[theta] val internal: CompactSketch) {
+class CompactTheta(val internal: CompactSketch) {
   def estimate: Double = internal.getEstimate
   def uniqueCountEstimate: UniqueCount = UniqueCount(internal.getEstimate.round)
 }

@@ -6,7 +6,7 @@ import com.mowczare.kafka.streams.pds.model.UniqueCount
 import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCodecs
 import com.yahoo.sketches.hll.{HllSketch, Union}
 
-class HllUnion[T: HasByteArrayContent](private[hll] val internalHll: Union) {
+class HllUnion[T: HasByteArrayContent](val internalHll: Union) {
 
   def merge(hll: Hll[T]): HllUnion[T] = {
     internalHll.update(hll.internalHll)

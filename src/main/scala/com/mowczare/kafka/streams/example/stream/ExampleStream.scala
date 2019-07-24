@@ -1,12 +1,11 @@
 package com.mowczare.kafka.streams.example.stream
 
 import com.avsystem.commons._
-import com.avsystem.commons.serialization.GenCodec
 import com.mowczare.kafka.streams.StreamOps._
 import com.mowczare.kafka.streams.example.environment.KafkaSettings
 import com.mowczare.kafka.streams.example.model.InputEvent
 import com.mowczare.kafka.streams.example.serde.SerdeUtil
-import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyHll
+import com.mowczare.kafka.streams.example.stream.ExampleStream.streamTopologyFrequency
 import com.mowczare.kafka.streams.pds.frequency.ItemSketchWrap
 import com.mowczare.kafka.streams.pds.hll.Hll
 import com.mowczare.kafka.streams.pds.theta.UpdateTheta
@@ -18,7 +17,7 @@ import org.apache.kafka.streams.scala.kstream.Produced
 final class ExampleStream(kafkaSettings: KafkaSettings) {
 
   private val streams: KafkaStreams = new KafkaStreams(
-    new StreamsBuilder().setup(streamTopologyHll(kafkaSettings.inputTopic, kafkaSettings.outputTopic)).build(),
+    new StreamsBuilder().setup(streamTopologyFrequency(64)(kafkaSettings.inputTopic, kafkaSettings.outputTopic)).build(),
     kafkaSettings.streamProperties(streamName)
   )
 
@@ -87,8 +86,11 @@ object ExampleStream {
     builder
       .stream[String, InputEvent](inputTopic)
       .groupBy { case (key, event) => event.value % 2 }
+
       .frequency(capacity)
+
       .toStream
+      .peek{case(i, c) => println(i, c)}
       .to(outputTopic)(implicitly[Produced[Long, ItemSketchWrap[InputEvent]]])
   }
 }

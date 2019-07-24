@@ -6,7 +6,7 @@ import com.mowczare.kafka.streams.pds.model.UniqueCount
 import com.mowczare.kafka.streams.pds.yahooIntegration.serialization.YahooGenCodecs
 import com.yahoo.sketches.hll.{HllSketch, Union}
 
-class Hll[T : HasByteArrayContent](private[hll] val internalHll: HllSketch) {
+class Hll[T : HasByteArrayContent](val internalHll: HllSketch) {
 
   def add(elem: T): Hll[T] = {
     internalHll.update(HasByteArrayContent[T].byteArrayContent(elem))

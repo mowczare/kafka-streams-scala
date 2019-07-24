@@ -8,7 +8,7 @@ import com.yahoo.sketches.quantiles.ItemsSketch
 
 import scala.reflect.ClassTag
 
-class Quantile[T : ClassTag](private [quantiles] val internal: ItemsSketch[T]) {
+class Quantile[T : ClassTag](val internal: ItemsSketch[T]) {
 
   def add(item: T): Quantile[T] = {
     internal.update(item)
